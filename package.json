@@ -1,6 +1,6 @@
 {
   "name": "d3-horizon",
-  "version": "0.4.2",
+  "version": "0.1.0",
   "description": "Horizon chart plugin for d3v4.",
   "keywords": [
     "d3",
@@ -21,15 +21,16 @@
     "url": "https://github.com/d3/d3-horizon.git"
   },
   "scripts": {
-    "pretest": "rm -rf build && mkdir build && rollup --banner \"$(preamble)\" -g d3-array:d3,d3-collection:d3,d3-interpolate:d3 -f umd -n d3 -o build/d3-horizon.js -- index.js",
+    "pretest": "rm -rf build && mkdir build && rollup -g d3-scale:d3,d3-selection:d3,d3-shape:d3,d3-array:d3,d3-transition:d3 -f umd -n d3 -o build/d3-horizon.js -- index.js",
     "test": "tape 'test/**/*-test.js' && eslint index.js src",
-    "prepublish": "npm run test && uglifyjs --preamble \"$(preamble)\" build/d3-horizon.js -c -m -o build/d3-horizon.min.js",
+    "prepublish": "npm run test && uglifyjs build/d3-horizon.js -c -m -o build/d3-horizon.min.js",
     "postpublish": "git push && git push --tags && zip -j build/d3-horizon.zip -- LICENSE README.md build/d3-horizon.js build/d3-horizon.min.js"
   },
   "dependencies": {
-    "d3-array": "1",
-    "d3-collection": "1",
-    "d3-interpolate": "1"
+    "d3-scale": "^1.0.5",
+    "d3-selection": "^1.0.5",
+    "d3-shape": "^1.0.6",
+    "d3-transition": "^1.0.4"
   },
   "devDependencies": {
     "eslint": "3",
