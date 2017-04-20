@@ -2,7 +2,7 @@ import {scaleLinear} from "d3-scale";
 import {select} from "d3-selection";
 import {area} from "d3-shape";
 import {range} from "d3-array";
-//import {transition} from "d3-transition";
+import {transition} from "d3-transition";
 
 export default function() {
     var bands = 1, // between 1 and 5, typically
@@ -27,7 +27,7 @@ export default function() {
             yMax = -Infinity,
             x0, // old x-scale
             y0, // old y-scale
-            //t0,
+            t0,
             id; // unique id for paths
 
         // Compute x- and y-values along with extents.
@@ -50,12 +50,12 @@ export default function() {
         if (this.__chart__) {
           x0 = this.__chart__.x;
           y0 = this.__chart__.y;
-          //t0 = this.__chart__.t;
+          t0 = this.__chart__.t;
           id = this.__chart__.id;
         } else {
           x0 = x1.copy();
           y0 = y1.copy();
-          //t0 = t1;
+          t0 = t1;
           id = ++d3_horizonId;
         }
 
@@ -64,14 +64,17 @@ export default function() {
             .data([null]);
 
         // The clip path is a simple rect.
-        defs.enter().append("defs").append("clipPath")
+        var defs_new = defs.enter().append("defs");
+        defs_new.append("clipPath")
             .attr("id", "d3_horizon_clip" + id)
           .append("rect")
             .attr("width", width)
             .attr("height", height);
 
-        //transition(defs.select("rect"))
+        defs = defs.merge(defs_new);
         defs.select("rect")
+            .transition(transition())
+        //defs.select("rect")
             .attr("width", width)
             .attr("height", height);
 
@@ -98,18 +101,20 @@ export default function() {
 
         path = path.enter().append("path")
             .style("fill", color)
-            .attr("transform", t1)
+            .attr("transform", t0)
             .attr("d", d0)
             .merge(path);
 
         //transition(path)
         path
+            .transition(transition())
             .style("fill", color)
             .attr("transform", t1)
             .attr("d", d1);
 
         //transition(path.exit())
         path.exit()
+            .transition(transition())
             .attr("transform", t1)
             .attr("d", d1)
             .remove();
