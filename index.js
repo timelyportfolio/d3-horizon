@@ -1,1 +1,1 @@
-export {default as sankey} from "./src/sankey";
+export {default as horizon} from "./src/horizon";
