@@ -5,7 +5,6 @@ import {range} from "d3-array";
 import {transition} from "d3-transition";
 
 export default function() {
- var horizon = function() {
     var bands = 1, // between 1 and 5, typically
         mode = "offset", // or mirror
         d3area = area(),
@@ -96,17 +95,20 @@ export default function() {
             .x(function(d) { return x1(d[0]); })
             .y1(function(d) { return height * bands - y1(d[1]); })(data);
 
-        path.enter().append("path")
+        path = path.enter().append("path")
             .style("fill", color)
             .attr("transform", t0)
-            .attr("d", d0);
+            .attr("d", d0)
+            .merge(path);
 
-        transition(path)
+        //transition(path)
+        path
             .style("fill", color)
             .attr("transform", t1)
             .attr("d", d1);
 
-        transition(path.exit())
+        //transition(path.exit())
+        path.exit()
             .attr("transform", t1)
             .attr("d", d1)
             .remove();
@@ -167,19 +169,17 @@ export default function() {
 
     horizon.interpolate = d3area.interpolate;
     horizon.tension = d3area.tension;
+
+    var d3_horizonId = 0;
+
+    function d3_horizonX(d) { return d[0]; }
+    function d3_horizonY(d) { return d[1]; }
+
+    function d3_horizonTransform(bands, h, mode) {
+      return mode == "offset"
+          ? function(d) { return "translate(0," + (d + (d < 0) - bands) * h + ")"; }
+          : function(d) { return (d < 0 ? "scale(1,-1)" : "") + "translate(0," + (d - bands) * h + ")"; };
+    }
+
     return horizon;
-  };
-
-  var d3_horizonId = 0;
-
-  function d3_horizonX(d) { return d[0]; }
-  function d3_horizonY(d) { return d[1]; }
-
-  function d3_horizonTransform(bands, h, mode) {
-    return mode == "offset"
-        ? function(d) { return "translate(0," + (d + (d < 0) - bands) * h + ")"; }
-        : function(d) { return (d < 0 ? "scale(1,-1)" : "") + "translate(0," + (d - bands) * h + ")"; };
-  }
-
-  return horizon;
 }
