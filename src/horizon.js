@@ -74,7 +74,6 @@ export default function() {
         defs = defs.merge(defs_new);
         defs.select("rect")
             .transition(transition())
-        //defs.select("rect")
             .attr("width", width)
             .attr("height", height);
 
@@ -105,14 +104,12 @@ export default function() {
             .attr("d", d0)
             .merge(path);
 
-        //transition(path)
         path
             .transition(transition())
             .style("fill", color)
             .attr("transform", t1)
             .attr("d", d1);
 
-        //transition(path.exit())
         path.exit()
             .transition(transition())
             .attr("transform", t1)
@@ -173,7 +170,11 @@ export default function() {
       return horizon;
     };
 
-    horizon.curve = d3area.curve;
+    horizon.curve = function(_) {
+      if (!arguments.length) return d3area.curve;
+      d3area.curve(_);
+      return horizon;
+    };
 
     var d3_horizonId = 0;
 
