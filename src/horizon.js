@@ -98,6 +98,12 @@ export default function() {
             .x(function(d) { return x1(d[0]); })
             .y1(function(d) { return height * bands - y1(d[1]); })(data);
 
+        path.exit()
+            .transition(transition())
+            .attr("transform", t1)
+            .attr("d", d1)
+            .remove();
+
         path = path.enter().append("path")
             .style("fill", color)
             .attr("transform", t0)
@@ -109,12 +115,6 @@ export default function() {
             .style("fill", color)
             .attr("transform", t1)
             .attr("d", d1);
-
-        path.exit()
-            .transition(transition())
-            .attr("transform", t1)
-            .attr("d", d1)
-            .remove();
 
         // Stash the new scales.
         this.__chart__ = {x: x1, y: y1, t: t1, id: id};
